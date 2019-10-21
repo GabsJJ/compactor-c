@@ -1,0 +1,10 @@
+# depslib dependency file v1.0
+1571676548 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\main.c
+	<stdio.h>
+	<stdlib.h>
+	"compac.h"
+
+1571676511 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.c
+
+1571676596 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.h
+
