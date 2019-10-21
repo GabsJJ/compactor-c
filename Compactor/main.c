@@ -11,7 +11,7 @@ int main()
     printf("Digite o caminho do arquivo: ");
     scanf("%s", caminho);
 
-    if((arq1 = fopen(caminho, "r")) == NULL)
+    if((arq1 = fopen(caminho, "rb")) == NULL)
         printf("Arquivo não encontrado");
     else
     {
@@ -20,10 +20,12 @@ int main()
         printf("\n2-Descompactar");
         printf("\n-------------------------\n");
         scanf("%u", &opcao);
+        contar(arq1);
         if(opcao == 1)
             compactar(arq1);
         else
             descompactar(arq1);
+        fclose(arq1);
     }
     return 0;
 }
