@@ -3,12 +3,13 @@
 
 #include <stdio.h>
 
-struct cchar
+typedef struct
 {
-    int c;
+    char charac;
     int freq;
 }caractere;
 
+static caractere *chars;
 void contar(FILE *arq);
 void compactar(FILE *arq);
 void descompactar(FILE *arq);
