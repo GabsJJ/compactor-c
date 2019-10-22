@@ -1,13 +1,11 @@
 # depslib dependency file v1.0
-1571757132 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\main.c
-	<stdio.h>
-	<stdlib.h>
+1571759942 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\main.c
 	"compac.h"
 
-1571757953 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.c
+1571760772 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.c
 	"compac.h"
 
-1571757121 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.h
+1571759444 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.h
 	"priorQueue.h"
 
 1571704242 source:c:\users\gabri\documents\github\compactor-decompressor-c\compactor\main.c
@@ -22,10 +20,12 @@
 	<stdlib.h>
 	"compac.h"
 
-1571757932 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\priorqueue.c
+1571762536 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\priorqueue.c
 	"priorQueue.h"
 
-1571757807 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\priorqueue.h
+1571759444 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\priorqueue.h
 	<stdio.h>
 	<stdlib.h>
+
+1571760857 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\arvore.c
 

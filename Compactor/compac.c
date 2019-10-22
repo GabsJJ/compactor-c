@@ -23,8 +23,9 @@ void contar(FILE *arq)
     while((c = getc(arq) ) != EOF)
         qtdChars++;
     rewind(arq);
+
     huffNode* vetAux[qtdChars];
-    for(i=0; i < qtdChars; i++)
+    for(i = 0; i < qtdChars; i++)
         vetAux[i] = NULL;
 
     while((c = getc(arq) ) != EOF)
@@ -41,12 +42,14 @@ void contar(FILE *arq)
     }
     priQueue = criarFila();
     for(i = 0; i < qtdChars; i++)
-        inserir(priQueue, vetAux[i]);
+        if(vetAux[i] != NULL)
+            inserir(priQueue, vetAux[i]);
 }
 
 void compactar(FILE *arq)
 {
     printar(priQueue);
+    ///fazer a arvore
 }
 
 void descompactar(FILE *arq)

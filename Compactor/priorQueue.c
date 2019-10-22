@@ -34,22 +34,39 @@ void inserir(priorQueue* fila, huffNode* novo)
     }
     else
     {
-        if(novo -> valueHuffNode > fila -> inicio -> value -> valueHuffNode)
+        if(novo -> frequency <= fila -> inicio -> value -> frequency)
         {
-            ///insere no fim
+            nodeQueue* novoAux = criarNo(novo);
+            novoAux -> prox = fila -> inicio;
+            fila -> inicio = novoAux;
         }
         else
         {
-            ///insere antes do inicio
-
+            nodeQueue* noAt = fila -> inicio;
+            nodeQueue* noAnt = noAt;
+            nodeQueue* novoAux = NULL;
+            while(noAt != NULL)
+            {
+                if(novo -> frequency < noAt -> value -> frequency)
+                {
+                    novoAux = criarNo(novo);
+                    novoAux -> prox = noAt;
+                    noAnt -> prox = novoAux;
+                }
+                else
+                {
+                    noAnt = noAt;
+                    noAt = noAt -> prox;
+                }
+            }
+            if(novoAux == NULL) //insere no final
+            {
+                novoAux = criarNo(novo);
+                fila -> fim -> prox = novoAux;
+                fila -> fim = novoAux;
+            }
         }
-
     }
-}
-
-void inserirNoFim(priorQueue* fila, huffNode* novo)
-{
-
 }
 
 void printar(priorQueue* fila)
@@ -59,7 +76,7 @@ void printar(priorQueue* fila)
         nodeQueue* noAt = fila -> inicio;
         while(noAt != NULL)
         {
-            printf("%c", noAt -> value -> valueHuffNode);
+            printf("\nchar: %c, freq: %d", noAt -> value -> valueHuffNode, noAt -> value -> frequency);
             noAt = noAt -> prox;
         }
     }
