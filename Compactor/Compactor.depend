@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1571678115 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\main.c
+1571742740 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\main.c
 	<stdio.h>
 	<stdlib.h>
 	"compac.h"
@@ -8,7 +8,7 @@
 	<stdlib.h>
 	"compac.h"
 
-1571677888 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.h
+1571742693 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.h
 	<stdio.h>
 
 1571704242 source:c:\users\gabri\documents\github\compactor-decompressor-c\compactor\main.c
@@ -22,4 +22,6 @@
 1571705073 source:c:\users\gabri\documents\github\compactor-decompressor-c\compactor\compac.c
 	<stdlib.h>
 	"compac.h"
+
+1571742280 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\priorqueue.c
 

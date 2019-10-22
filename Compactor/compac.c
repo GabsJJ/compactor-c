@@ -1,17 +1,30 @@
 #include <stdlib.h>
 #include "compac.h"
+#include "priorQueue.h"
+
+node* criarNo(char val, int freq)
+{
+    node* aux = (node*)malloc(sizeof(node));
+    aux -> value = val;
+    aux -> frequency = freq;
+    aux -> esq = NULL;
+    aux -> dir = NULL;
+
+    return aux;
+}
 
 void contar(FILE *arq)
 {
     int qtdChars = 1;
     int c, freq2;
-    caractere *objChar;
+    noCaracter *objChar;
 
     while(!feof(arq))
         qtdChars++;
     rewind(arq);
 
-    chars = (caractere*)malloc(sizeof(caractere)*qtdChars);
+    noCaracter vetAux[qtdChars];
+
     //fazer a fila direto
     while(!feof(arq))
     {
