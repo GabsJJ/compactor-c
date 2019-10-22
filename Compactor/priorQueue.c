@@ -1,46 +1,66 @@
 #include "priorQueue.h"
 
-static nodeQueue* criarNo(char value)
+nodeQueue* criarNo(huffNode* value)
 {
     nodeQueue* aux = (nodeQueue*)malloc(sizeof(nodeQueue));
     aux -> value = value;
     aux -> prox = NULL;
+
+    return aux;
+}
+
+huffNode* criarHuffNode(char value, int freq)
+{
+    huffNode* aux = (huffNode*)malloc(sizeof(huffNode));
+    aux -> valueHuffNode = value;
+    aux -> frequency = freq;
+    aux -> esq = aux -> dir = NULL;
+    return aux;
 }
 
 priorQueue* criarFila()
 {
     priorQueue* filaAux = (priorQueue*)malloc(sizeof(priorQueue));
-    filaAux -> inicio = NULL;
+    filaAux -> inicio = filaAux -> fim = NULL;
 
     return filaAux;
 }
 
-static nodeQueue* procurar(priorQueue* fila, char valueS)
-{
-    nodeQueue* aux = NULL;
-    if(fila -> inicio != NULL)
-    {
-        aux = fila -> inicio;
-        while(aux -> value -> valueNodeTree != valueS || aux != NULL)
-        {
-            if(aux -> value -> valueNodeTree == valueS)
-                return aux;
-            else
-                aux = aux -> prox;
-        }
-    }
-    return aux;
-}
-
-static void inserir(priorQueue* fila, nodeQueue* novo)
+void inserir(priorQueue* fila, huffNode* novo)
 {
     if(fila -> inicio == NULL)
     {
-        //inserir no inicio
+        fila -> fim = fila -> inicio = criarNo(novo);
     }
     else
     {
-        ///procura o item e insere
+        if(novo -> valueHuffNode > fila -> inicio -> value -> valueHuffNode)
+        {
+            ///insere no fim
+        }
+        else
+        {
+            ///insere antes do inicio
 
+        }
+
+    }
+}
+
+void inserirNoFim(priorQueue* fila, huffNode* novo)
+{
+
+}
+
+void printar(priorQueue* fila)
+{
+    if(fila -> inicio != NULL)
+    {
+        nodeQueue* noAt = fila -> inicio;
+        while(noAt != NULL)
+        {
+            printf("%c", noAt -> value -> valueHuffNode);
+            noAt = noAt -> prox;
+        }
     }
 }

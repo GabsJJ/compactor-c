@@ -1,54 +1,52 @@
-#include <stdlib.h>
 #include "compac.h"
-#include "priorQueue.h"
 
-node* criarNo(char val, int freq)
+priorQueue* priQueue;
+
+huffNode* procurarNoVetor(huffNode* vetor[], int tamanho, char value)
 {
-    node* aux = (node*)malloc(sizeof(node));
-    aux -> value = val;
-    aux -> frequency = freq;
-    aux -> esq = NULL;
-    aux -> dir = NULL;
-
-    return aux;
+    int i = 0;
+    huffNode* noAt = NULL;
+    for(i = 0; i < tamanho; i++)
+    {
+        if(vetor[i] != NULL && vetor[i] -> valueHuffNode == value)
+            return vetor[i];
+    }
+    return noAt;
 }
 
 void contar(FILE *arq)
 {
-    int qtdChars = 1;
-    int c, freq2;
-    noCaracter *objChar;
+    int qtdChars = 0;
+    int c, pAtual = 0, i = 0;
+    huffNode* noAt;
 
-    while(!feof(arq))
+    while((c = getc(arq) ) != EOF)
         qtdChars++;
     rewind(arq);
+    huffNode* vetAux[qtdChars];
+    for(i=0; i < qtdChars; i++)
+        vetAux[i] = NULL;
 
-    noCaracter vetAux[qtdChars];
-
-    //fazer a fila direto
-    while(!feof(arq))
+    while((c = getc(arq) ) != EOF)
     {
-        objChar = (caractere*)malloc(sizeof(caractere));
-        c = fgetc(arq);
-        freq2 = 1;
-        objChar -> charac = c;
-        objChar -> freq = freq2;
-        if(fgetc(arq) != c)
-        {
-
-        }
+        noAt = procurarNoVetor(vetAux, qtdChars, c);
+        if(noAt != NULL)
+            noAt -> frequency += 1;
         else
         {
-            freq2++;
-            objChar -> freq = freq2;
+            huffNode* aux = criarHuffNode(c, 1);
+            vetAux[pAtual] = aux;
+            pAtual++;
         }
     }
-    free(chars);
+    priQueue = criarFila();
+    for(i = 0; i < qtdChars; i++)
+        inserir(priQueue, vetAux[i]);
 }
 
 void compactar(FILE *arq)
 {
-
+    printar(priQueue);
 }
 
 void descompactar(FILE *arq)

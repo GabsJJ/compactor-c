@@ -20,6 +20,7 @@ int main()
         printf("\n2-Descompactar");
         printf("\n-------------------------\n");
         scanf("%u", &opcao);
+        contar(arq1);
         if(opcao == 1)
             compactar(arq1);
         else

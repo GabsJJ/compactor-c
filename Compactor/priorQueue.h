@@ -1,6 +1,7 @@
 #ifndef PRIORQUEUE
 #define PRIORQUEUE
 
+#include <stdio.h>
 #include <stdlib.h>
 
 /*pode ser util*/
@@ -12,25 +13,27 @@ typedef enum
 
 typedef struct no
 {
-    char valueNodeTree;
+    char valueHuffNode;
     int frequency;
     struct no* esq;
     struct no* dir;
-}node;
+}huffNode;
 
 typedef struct noQ
 {
-    node value;
+    huffNode* value;
     struct noQ* prox;
 }nodeQueue;
 
 typedef struct queueP
 {
     nodeQueue* inicio;
+    nodeQueue* fim;
 }priorQueue;
 
-static priorQueue* criarFila();
-static nodeQueue* criarNo(char value);
-static nodeQueue* procurar(priorQueue* fila, nodeQueue procurado);
-static void inserir(priorQueue* fila, nodeQueue* novo);
+priorQueue* criarFila();
+nodeQueue* criarNo(huffNode* value);
+huffNode* criarHuffNode(char value, int freq);
+void inserir(priorQueue* fila, huffNode* novo);
+void printar(priorQueue* fila);
 #endif
