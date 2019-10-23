@@ -1,6 +1,6 @@
 #include "compac.h"
 
-huffNode* procurarNoVetor(huffNode** vetor, int tamanho, char value)
+huffNode* procurarNoVetor(huffNode* vetor[], int tamanho, char value)
 {
     int i = 0;
     huffNode* noAt = NULL;
@@ -19,10 +19,10 @@ void contar(FILE *arq)
     huffNode* noAt;
 
     while((c = fgetc(arq) ) != EOF)
-       qtdChars++;
+        qtdChars++;
     rewind(arq);
 
-    huffNode** vetAux = (huffNode**)malloc(sizeof(huffNode)*qtdChars);
+    huffNode* vetAux[qtdChars];
     for(i = 0; i < qtdChars; i++)
         vetAux[i] = NULL;
 
@@ -39,22 +39,20 @@ void contar(FILE *arq)
         }
     }
     /*cria a fila de prioridade de acordo com o metodo de huffman*/
-    /*priQueue = criarFila();
+    priQueue = criarFila();
     for(i = 0; i < qtdChars; i++)
         if(vetAux[i] != NULL)
-            inserir(priQueue, vetAux[i]);*/
-
-    free(vetAux);
+            inserir(priQueue, vetAux[i]);
 }
 
 void compactar(FILE *arq)
 {
-    /*tree* huffTree = criarArvore(priQueue);
+    tree* huffTree = criarArvore(priQueue);
     int qtdFolhas = quantasFolhas(huffTree -> root);
     nodeBit* vetBits[qtdFolhas];
 
     transformarEmBits(huffTree, vetBits);
-    //printarArvore(huffTree -> root);*/
+    //printarArvore(huffTree -> root);
 }
 
 void descompactar(FILE *arq)

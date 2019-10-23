@@ -2,10 +2,10 @@
 1571826884 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\main.c
 	"compac.h"
 
-1571841741 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.c
+1571840530 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.c
 	"compac.h"
 
-1571841679 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.h
+1571840275 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.h
 	"priorQueue.h"
 	"tree.h"
 
@@ -36,7 +36,7 @@
 1571792105 source:c:\users\gabri\documents\github\compactor-decompressor-c\compactor\priorqueue.c
 	"priorQueue.h"
 
-1571841079 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\tree.c
+1571840252 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\tree.c
 	"tree.h"
 
 1571840284 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\tree.h
