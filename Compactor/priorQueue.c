@@ -29,9 +29,7 @@ priorQueue* criarFila()
 void inserir(priorQueue* fila, huffNode* novo)
 {
     if(fila -> inicio == NULL)
-    {
         fila -> fim = fila -> inicio = criarNo(novo);
-    }
     else
     {
         if(novo -> frequency <= fila -> inicio -> value -> frequency)
@@ -40,30 +38,26 @@ void inserir(priorQueue* fila, huffNode* novo)
             novoAux -> prox = fila -> inicio;
             fila -> inicio = novoAux;
         }
+        else if(novo -> frequency >= fila -> fim -> value -> frequency)
+        {
+            nodeQueue* novoAux = criarNo(novo);
+            fila -> fim -> prox = novoAux;
+            fila -> fim = novoAux;
+        }
         else
         {
             nodeQueue* noAt = fila -> inicio;
             nodeQueue* noAnt = noAt;
-            nodeQueue* novoAux = NULL;
             while(noAt != NULL)
             {
                 if(novo -> frequency < noAt -> value -> frequency)
                 {
-                    novoAux = criarNo(novo);
+                    nodeQueue* novoAux = criarNo(novo);
                     novoAux -> prox = noAt;
                     noAnt -> prox = novoAux;
                 }
-                else
-                {
-                    noAnt = noAt;
-                    noAt = noAt -> prox;
-                }
-            }
-            if(novoAux == NULL) //insere no final
-            {
-                novoAux = criarNo(novo);
-                fila -> fim -> prox = novoAux;
-                fila -> fim = novoAux;
+                noAnt = noAt;
+                noAt = noAt -> prox;
             }
         }
     }

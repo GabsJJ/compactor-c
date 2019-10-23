@@ -8,16 +8,13 @@
 1571759444 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.h
 	"priorQueue.h"
 
-1571704242 source:c:\users\gabri\documents\github\compactor-decompressor-c\compactor\main.c
-	<stdio.h>
-	<stdlib.h>
+1571790681 source:c:\users\gabri\documents\github\compactor-decompressor-c\compactor\main.c
 	"compac.h"
 
-1571706109 c:\users\gabri\documents\github\compactor-decompressor-c\compactor\compac.h
-	<stdio.h>
+1571790681 c:\users\gabri\documents\github\compactor-decompressor-c\compactor\compac.h
+	"priorQueue.h"
 
-1571705073 source:c:\users\gabri\documents\github\compactor-decompressor-c\compactor\compac.c
-	<stdlib.h>
+1571790681 source:c:\users\gabri\documents\github\compactor-decompressor-c\compactor\compac.c
 	"compac.h"
 
 1571762536 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\priorqueue.c
@@ -28,4 +25,13 @@
 	<stdlib.h>
 
 1571760857 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\arvore.c
+
+1571790681 c:\users\gabri\documents\github\compactor-decompressor-c\compactor\priorqueue.h
+	<stdio.h>
+	<stdlib.h>
+
+1571790911 source:c:\users\gabri\documents\github\compactor-decompressor-c\compactor\tree.c
+
+1571792105 source:c:\users\gabri\documents\github\compactor-decompressor-c\compactor\priorqueue.c
+	"priorQueue.h"
 

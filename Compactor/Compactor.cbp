@@ -31,10 +31,6 @@
 		<Compiler>
 			<Add option="-Wall" />
 		</Compiler>
-		<Unit filename="arvore.c">
-			<Option compilerVar="CC" />
-		</Unit>
-		<Unit filename="arvore.h" />
 		<Unit filename="compac.c">
 			<Option compilerVar="CC" />
 		</Unit>
@@ -46,6 +42,10 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="priorQueue.h" />
+		<Unit filename="tree.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="tree.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
