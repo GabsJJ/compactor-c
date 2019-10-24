@@ -1,8 +1,8 @@
 #include "tree.h"
 
-tree* criarArvore(priorQueue* fila)
+huffNode* criarArvore(priorQueue* fila)
 {
-    tree* huffTree = (tree*)malloc(sizeof(tree));
+    huffNode* huffTree = (huffNode*)malloc(sizeof(huffNode));
     huffNode *huffNodeTree, *noEsq, *noDir;
     while(fila -> tamanho >= 2)
     {
@@ -14,7 +14,7 @@ tree* criarArvore(priorQueue* fila)
         inserir(fila, huffNodeTree);
     }
     nodeQueue* aux = remover(fila,0);
-    huffTree -> root = aux -> value;
+    huffTree = aux -> value;
     return huffTree;
 }
 
@@ -45,7 +45,36 @@ int quantasFolhas(huffNode* root)
         return quantasFolhas(root -> esq) + quantasFolhas(root -> dir);
 }
 
-void transformarEmBits(tree* treeH, nodeBit* vetBits[])
+int alturaArvore(huffNode* root)
 {
+    if(root == NULL)
+        return 0;
+    else
+    {
+       int altEsq = alturaArvore(root->esq);
+       int altDir = alturaArvore(root->dir);
 
+       if (altEsq > altDir)
+           return(altEsq+1);
+       return(altDir+1);
+    }
+}
+
+nodeBit* criarNodeBit(char value, char code[])
+{
+    nodeBit* noAtual = (nodeBit*)malloc(sizeof(nodeBit));
+    noAtual -> value = value;
+    noAtual -> code = code;
+}
+
+nodeBit* transformarEmBits(huffNode* root, nodeBit* noAtual)
+{
+    if(eFolha(root) == true)
+    {
+        ///cria nodeBit com o novo codigo
+    }
+    if(root -> esq != NULL)
+        printarArvore(root -> esq);
+    if(root -> dir != NULL)
+        printarArvore(root -> dir);
 }

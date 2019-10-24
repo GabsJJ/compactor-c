@@ -39,22 +39,22 @@ void contar(FILE *arq)
         }
     }
     /*cria a fila de prioridade de acordo com o metodo de huffman*/
-    /*priQueue = criarFila();
+    priQueue = criarFila();
     for(i = 0; i < qtdChars; i++)
         if(vetAux[i] != NULL)
-            inserir(priQueue, vetAux[i]);*/
+            inserir(priQueue, vetAux[i]);
 
     free(vetAux);
 }
 
 void compactar(FILE *arq)
 {
-    /*tree* huffTree = criarArvore(priQueue);
-    int qtdFolhas = quantasFolhas(huffTree -> root);
-    nodeBit* vetBits[qtdFolhas];
-
-    transformarEmBits(huffTree, vetBits);
-    //printarArvore(huffTree -> root);*/
+    huffNode* huffTree = criarArvore(priQueue);
+    int qtdFolhas = quantasFolhas(huffTree);
+    //nodeBit* vetBits[qtdFolhas];
+    //nodeBit* noAtual = criarNodeBit('\0',codeAux);
+    //vetBits = transformarEmBits(huffTree, noAtual);
+    //printarArvore(huffTree -> root);
 }
 
 void descompactar(FILE *arq)
