@@ -51,9 +51,12 @@ void compactar(FILE *arq)
 {
     huffNode* huffTree = criarArvore(priQueue);
     int qtdFolhas = quantasFolhas(huffTree);
-    //nodeBit* vetBits[qtdFolhas];
-    //nodeBit* noAtual = criarNodeBit('\0',codeAux);
-    //vetBits = transformarEmBits(huffTree, noAtual);
+
+    int i = 0;
+    nodeBit** vetBits = (nodeBit**)malloc(sizeof(nodeBit*)*qtdFolhas);
+    char *codeAux = (char*)malloc(sizeof(char)*alturaArvore(huffTree));
+    nodeBit* noAtual = criarNodeBit('\0',codeAux);
+    transformarEmBits(huffTree, noAtual, vetBits, i);
     //printarArvore(huffTree -> root);
 }
 

@@ -7,7 +7,7 @@
 typedef struct
 {
     char value;
-    char code[];
+    char *code;
 }nodeBit;
 
 huffNode* criarArvore(priorQueue* fila);
@@ -15,6 +15,6 @@ boolean eFolha(huffNode* node);
 void printarArvore(huffNode* root);
 int quantasFolhas(huffNode* root);
 int alturaArvore(huffNode* root);
-nodeBit* criarNodeBit(char value, char code[]);
-nodeBit* transformarEmBits(huffNode* root, nodeBit* noAtual);
+nodeBit* criarNodeBit(char value, char *code);
+void transformarEmBits(huffNode* root, nodeBit* noAtual, nodeBit** vetor, int index);
 #endif

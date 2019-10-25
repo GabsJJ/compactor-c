@@ -60,21 +60,50 @@ int alturaArvore(huffNode* root)
     }
 }
 
-nodeBit* criarNodeBit(char value, char code[])
+nodeBit* criarNodeBit(char value, char *code)
 {
     nodeBit* noAtual = (nodeBit*)malloc(sizeof(nodeBit));
     noAtual -> value = value;
     noAtual -> code = code;
+
+    return noAtual;
 }
 
-nodeBit* transformarEmBits(huffNode* root, nodeBit* noAtual)
+void transformarEmBits(huffNode* root, nodeBit* noAtual, nodeBit** vetor, int index)
 {
     if(eFolha(root) == true)
     {
-        ///cria nodeBit com o novo codigo
+        noAtual -> value = root -> valueHuffNode;
+        printf("\nchar: %c code: %s", noAtual -> value, noAtual -> code);
+        vetor[index] = noAtual;
+        index++;
     }
     if(root -> esq != NULL)
-        printarArvore(root -> esq);
+    {
+        strcat(noAtual -> code, "0");
+        transformarEmBits(root -> esq, noAtual, vetor, index);
+        /*printf("\n%d", strlen(noAtual -> code));
+        char *aux = (char*)malloc(sizeof(char)*strlen(noAtual -> code));
+        aux = noAtual -> code;
+        noAtual -> code = "";
+        free(aux);*/
+        char aux[strlen(noAtual -> code)];
+        memmove(aux, noAtual -> code, strlen(noAtual -> code)-1);
+        noAtual -> code = aux;
+    }
     if(root -> dir != NULL)
-        printarArvore(root -> dir);
+    {
+        strcat(noAtual -> code, "1");
+        transformarEmBits(root -> dir, noAtual, vetor, index);
+        //noAtual -> code = "";
+
+        /*char *aux = (char*)malloc(sizeof(char)*strlen(noAtual -> code));
+        aux = noAtual -> code;
+        noAtual -> code = "";
+        memmove(noAtual -> code, aux, strlen(noAtual -> code)-1);
+        free(aux);*/
+        char aux[strlen(noAtual -> code)];
+        memmove(aux, noAtual -> code, strlen(noAtual -> code)-1);
+        noAtual -> code = aux;
+    }
 }
