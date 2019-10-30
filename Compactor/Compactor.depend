@@ -1,11 +1,11 @@
 # depslib dependency file v1.0
-1571826884 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\main.c
+1572430602 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\main.c
 	"compac.h"
 
-1572012414 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.c
+1572431645 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.c
 	"compac.h"
 
-1571841679 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.h
+1572439111 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\compac.h
 	"priorQueue.h"
 	"tree.h"
 
@@ -22,7 +22,7 @@
 1571840859 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\priorqueue.c
 	"priorQueue.h"
 
-1571840844 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\priorqueue.h
+1572430602 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\priorqueue.h
 	<stdio.h>
 	<stdlib.h>
 
@@ -38,10 +38,10 @@
 1572293932 source:c:\users\gabri\documents\github\compactor-decompressor-c\compactor\priorqueue.c
 	"priorQueue.h"
 
-1572008467 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\tree.c
+1572432040 source:c:\users\u18196\documents\github\compactor-decompressor-c\compactor\tree.c
 	"tree.h"
 
-1572003221 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\tree.h
+1572431558 c:\users\u18196\documents\github\compactor-decompressor-c\compactor\tree.h
 	"priorQueue.h"
 	<string.h>
 

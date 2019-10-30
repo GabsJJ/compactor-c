@@ -69,7 +69,7 @@ nodeBit* criarNodeBit(int value, char* code)
     return noAtual;
 }
 
-void transformarEmBits(huffNode* root, char* codeAtual, nodeBit** vetor, int* indice)
+void transformarEmBits(huffNode* root, char* codeAtual, nodeBit** vetor)
 {
     if(eFolha(root) == true)
     {
@@ -78,19 +78,19 @@ void transformarEmBits(huffNode* root, char* codeAtual, nodeBit** vetor, int* in
         for(i = 0; i < strlen(codeAtual); i++)
             codeAux[i] = 0;
         strcpy(codeAux, codeAtual);
-        vetor[*indice] = criarNodeBit(root -> valueHuffNode, codeAux);
-        *indice += 1;
+        vetor[root -> valueHuffNode] -> value = root -> valueHuffNode;
+        vetor[root -> valueHuffNode] -> code = codeAux;
     }
     if(root -> esq != NULL)
     {
         strcat(codeAtual, "0");
-        transformarEmBits(root -> esq, codeAtual, vetor, indice);
+        transformarEmBits(root -> esq, codeAtual, vetor);
         codeAtual[strlen(codeAtual)-1] = 0;
     }
     if(root -> dir != NULL)
     {
         strcat(codeAtual, "1");
-        transformarEmBits(root -> dir, codeAtual, vetor, indice);
+        transformarEmBits(root -> dir, codeAtual, vetor);
         codeAtual[strlen(codeAtual)-1] = 0;
     }
 }
