@@ -60,7 +60,7 @@ int alturaArvore(huffNode* root)
     }
 }
 
-nodeBit* criarNodeBit(char value, char *code)
+nodeBit* criarNodeBit(int value, char* code)
 {
     nodeBit* noAtual = (nodeBit*)malloc(sizeof(nodeBit));
     noAtual -> value = value;
@@ -69,41 +69,35 @@ nodeBit* criarNodeBit(char value, char *code)
     return noAtual;
 }
 
-void transformarEmBits(huffNode* root, nodeBit* noAtual, nodeBit** vetor, int index)
+void transformarEmBits(huffNode* root, char* codeAtual, nodeBit** vetor, int* indice)
 {
     if(eFolha(root) == true)
     {
-        noAtual -> value = root -> valueHuffNode;
-        printf("\nchar: %c code: %s", noAtual -> value, noAtual -> code);
-        vetor[index] = noAtual;
-        index++;
+        char* codeAux = (char*)malloc(sizeof(char)*strlen(codeAtual));
+        int i = 0;
+        for(i = 0; i < strlen(codeAtual); i++)
+            codeAux[i] = 0;
+        strcpy(codeAux, codeAtual);
+        vetor[*indice] = criarNodeBit(root -> valueHuffNode, codeAux);
+        *indice += 1;
     }
     if(root -> esq != NULL)
     {
-        strcat(noAtual -> code, "0");
-        transformarEmBits(root -> esq, noAtual, vetor, index);
-        /*printf("\n%d", strlen(noAtual -> code));
-        char *aux = (char*)malloc(sizeof(char)*strlen(noAtual -> code));
-        aux = noAtual -> code;
-        noAtual -> code = "";
-        free(aux);*/
-        char aux[strlen(noAtual -> code)];
-        memmove(aux, noAtual -> code, strlen(noAtual -> code)-1);
-        noAtual -> code = aux;
+        strcat(codeAtual, "0");
+        transformarEmBits(root -> esq, codeAtual, vetor, indice);
+        codeAtual[strlen(codeAtual)-1] = 0;
     }
     if(root -> dir != NULL)
     {
-        strcat(noAtual -> code, "1");
-        transformarEmBits(root -> dir, noAtual, vetor, index);
-        //noAtual -> code = "";
-
-        /*char *aux = (char*)malloc(sizeof(char)*strlen(noAtual -> code));
-        aux = noAtual -> code;
-        noAtual -> code = "";
-        memmove(noAtual -> code, aux, strlen(noAtual -> code)-1);
-        free(aux);*/
-        char aux[strlen(noAtual -> code)];
-        memmove(aux, noAtual -> code, strlen(noAtual -> code)-1);
-        noAtual -> code = aux;
+        strcat(codeAtual, "1");
+        transformarEmBits(root -> dir, codeAtual, vetor, indice);
+        codeAtual[strlen(codeAtual)-1] = 0;
     }
+}
+
+void freeArvore(huffNode* root)
+{
+    freeArvore(root->esq);
+    freeArvore(root->dir);
+    free(root);
 }

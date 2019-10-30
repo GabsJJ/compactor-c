@@ -14,7 +14,7 @@ typedef enum
 typedef struct noH
 {
     int valueHuffNode;
-    int frequency;
+    unsigned int frequency;
     struct noH* esq;
     struct noH* dir;
 }huffNode;

@@ -1,63 +1,52 @@
 #include "compac.h"
 
-huffNode* procurarNoVetor(huffNode** vetor, int tamanho, char value)
-{
-    int i = 0;
-    huffNode* noAt = NULL;
-    for(i = 0; i < tamanho; i++)
-    {
-        if(vetor[i] != NULL && vetor[i] -> valueHuffNode == value)
-            return vetor[i];
-    }
-    return noAt;
-}
-
 void contar(FILE *arq)
 {
-    int qtdChars = 0;
-    int c, pAtual = 0, i = 0;
-    huffNode* noAt;
-
-    while((c = fgetc(arq) ) != EOF)
-       qtdChars++;
-    rewind(arq);
-
-    huffNode** vetAux = (huffNode**)malloc(sizeof(huffNode)*qtdChars);
-    for(i = 0; i < qtdChars; i++)
-        vetAux[i] = NULL;
+    int c, i = 0;
+    huffNode** vetAux = (huffNode**)malloc(sizeof(huffNode)*256);
+    for(i = 0; i < 256; i++)
+        vetAux[i] = criarHuffNode(666, 1);
 
     while((c = fgetc(arq) ) != EOF)
     {
-        noAt = procurarNoVetor(vetAux, qtdChars, c);
-        if(noAt != NULL)
-            noAt -> frequency += 1;
+        if(vetAux[c] -> valueHuffNode == 666)
+            vetAux[c] -> valueHuffNode = c;
         else
-        {
-            huffNode* aux = criarHuffNode(c, 1);
-            vetAux[pAtual] = aux;
-            pAtual++;
-        }
+            vetAux[c] -> frequency += 1;
     }
     /*cria a fila de prioridade de acordo com o metodo de huffman*/
     priQueue = criarFila();
-    for(i = 0; i < qtdChars; i++)
-        if(vetAux[i] != NULL)
+    for(i = 0; i < 256; i++)
+        if(vetAux[i] -> valueHuffNode != 666)
             inserir(priQueue, vetAux[i]);
-
     free(vetAux);
 }
 
-void compactar(FILE *arq)
+void compactar(FILE *arq, char dir[])
 {
     huffNode* huffTree = criarArvore(priQueue);
-    int qtdFolhas = quantasFolhas(huffTree);
+    int qtdFolhas = quantasFolhas(huffTree), i = 0;
 
-    int i = 0;
     nodeBit** vetBits = (nodeBit**)malloc(sizeof(nodeBit*)*qtdFolhas);
-    char *codeAux = (char*)malloc(sizeof(char)*alturaArvore(huffTree));
-    nodeBit* noAtual = criarNodeBit('\0',codeAux);
-    transformarEmBits(huffTree, noAtual, vetBits, i);
-    //printarArvore(huffTree -> root);
+    char* vetCode = (char*)malloc(sizeof(char)*alturaArvore(huffTree));
+    for(i = 0; i < alturaArvore(huffTree); i++)
+        vetCode[i] = 0;
+    i = 0;
+    transformarEmBits(huffTree, vetCode, vetBits, &i);
+
+    ///colocar no arq
+    for(i=0; i< qtdFolhas; i++)
+    {
+        printf("\n val: %c code: %s", vetBits[i] -> value, vetBits[i] -> code);
+    }
+
+
+
+    //freeArvore(huffTree);
+    free(huffTree);
+    free(vetCode);
+    free(vetBits);
+    free(priQueue);
 }
 
 void descompactar(FILE *arq)
