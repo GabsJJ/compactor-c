@@ -95,9 +95,17 @@ void transformarEmBits(huffNode* root, char* codeAtual, nodeBit** vetor)
     }
 }
 
-void freeArvore(huffNode* root)
+void printarArq(huffNode* root, FILE* arq)
 {
-    freeArvore(root->esq);
-    freeArvore(root->dir);
-    free(root);
+    if(eFolha(root))
+    {
+        char v1 = root -> valueHuffNode;
+        char v2 = root -> frequency;
+        fputc(v1, arq);
+        fputc(v2, arq);
+    }
+    if(root -> esq != NULL)
+        printarArq(root -> esq, arq);
+    if(root -> dir != NULL)
+        printarArq(root -> dir, arq);
 }

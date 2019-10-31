@@ -17,5 +17,5 @@ int quantasFolhas(huffNode* root);
 int alturaArvore(huffNode* root);
 nodeBit* criarNodeBit(int value, char* code);
 void transformarEmBits(huffNode* root, char* codeAtual, nodeBit** vetor);
-void freeArvore(huffNode* root);
+void printarArq(huffNode* root, FILE* arq);
 #endif
