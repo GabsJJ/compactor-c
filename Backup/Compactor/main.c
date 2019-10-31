@@ -17,10 +17,12 @@ int main()
         printf("\n1-Compactar");
         printf("\n2-Descompactar");
         printf("\n-------------------------\n");
+        fflush(stdout);
         scanf("%u", &opcao);
+        fflush(stdin);
         contar(arq1);
         if(opcao == 1)
-            compactar(arq1);
+            compactar(arq1, caminho);
         else
             descompactar(arq1);
         fclose(arq1);

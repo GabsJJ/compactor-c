@@ -1,58 +1,92 @@
 #include "compac.h"
 
-huffNode* procurarNoVetor(huffNode* vetor[], int tamanho, char value)
-{
-    int i = 0;
-    huffNode* noAt = NULL;
-    for(i = 0; i < tamanho; i++)
-    {
-        if(vetor[i] != NULL && vetor[i] -> valueHuffNode == value)
-            return vetor[i];
-    }
-    return noAt;
-}
-
 void contar(FILE *arq)
 {
-    int qtdChars = 0;
-    int c, pAtual = 0, i = 0;
-    huffNode* noAt;
+    int c, i = 0;
+    huffNode** vetAux = (huffNode**)malloc(sizeof(huffNode)*256);
+    for(i = 0; i < 256; i++)
+        vetAux[i] = criarHuffNode(666, 1);
 
-    while((c = fgetc(arq) ) != EOF)
-        qtdChars++;
-    rewind(arq);
-
-    huffNode* vetAux[qtdChars];
-    for(i = 0; i < qtdChars; i++)
-        vetAux[i] = NULL;
-
-    while((c = fgetc(arq) ) != EOF)
+    while((c = fgetc(arq)) != EOF)
     {
-        noAt = procurarNoVetor(vetAux, qtdChars, c);
-        if(noAt != NULL)
-            noAt -> frequency += 1;
-        else
+        /*pode ter quebras de linha, tabulações, carriage return etc*/
+        if(c != '\r' && c != '\n' && c != '\t' && c != '\v' && c != '\f')
         {
-            huffNode* aux = criarHuffNode(c, 1);
-            vetAux[pAtual] = aux;
-            pAtual++;
+            if(vetAux[c] -> valueHuffNode == 666)
+                vetAux[c] -> valueHuffNode = c;
+            else
+                vetAux[c] -> frequency += 1;
         }
     }
+    rewind(arq);
     /*cria a fila de prioridade de acordo com o metodo de huffman*/
     priQueue = criarFila();
-    for(i = 0; i < qtdChars; i++)
-        if(vetAux[i] != NULL)
+    for(i = 0; i < 256; i++)
+        if(vetAux[i] -> valueHuffNode != 666)
             inserir(priQueue, vetAux[i]);
+    free(vetAux);
 }
 
-void compactar(FILE *arq)
+void compactar(FILE *arq, char dir[])
 {
-    tree* huffTree = criarArvore(priQueue);
-    int qtdFolhas = quantasFolhas(huffTree -> root);
-    nodeBit* vetBits[qtdFolhas];
+    huffNode* huffTree = criarArvore(priQueue);
+    int i = 0, indMenor = 0, c = 0;
 
-    transformarEmBits(huffTree, vetBits);
-    //printarArvore(huffTree -> root);
+    nodeBit** vetBits = (nodeBit**)malloc(sizeof(nodeBit*)*256);
+    for(i = 0; i < 256; i++)
+        vetBits[i] = criarNodeBit(666,"a");
+    char* vetCode = (char*)malloc(sizeof(char)*alturaArvore(huffTree));
+    for(i = 0; i < alturaArvore(huffTree); i++)
+        vetCode[i] = 0;
+    transformarEmBits(huffTree, vetCode, vetBits);
+
+    FILE *saida = fopen("C:/Users/u18196/Desktop/t.joojar", "wb");
+
+    char oitoAtual[9];
+    unsigned char byteResultado = 0;
+    i = 0;
+    boolean acabou = false;
+    while(!acabou)
+    {
+        for(; i < 8 && indMenor < strlen(vetBits[c] -> code); i++, indMenor++)
+            oitoAtual[i] = vetBits[c] -> code[indMenor];
+        if(i < 8)
+        {
+            indMenor = 0;
+            c = fgetc(arq);
+            if(c == EOF)
+                acabou = true;
+        }
+        else
+        {
+            i = 0;
+            int indiceByte = 0;
+            for(; indiceByte < 8; indiceByte++)
+                if(oitoAtual[indiceByte] == '1')            /**1 = 00000001*/
+                    byteResultado |= 1 << (7 - indiceByte); /**coloca 1 na posicao (7 -indiceByte)*/
+            if(strlen(vetBits[c] -> code) <= 8)
+            {
+                indMenor = 0;
+                c = fgetc(arq);
+                if(c == EOF)
+                    acabou = true;
+                fputc(byteResultado, saida);
+                byteResultado = 0;
+            }
+        }
+        /**falta => quando acabar e os bytes n estiverem todos completos -> botar lixo de memória ou algo do tipo*/
+    }
+    /*for(i=0; i< 256; i++)
+    {
+        if(vetBits[i] -> value != 666)
+            printf("\n val: %c code: %s", vetBits[i] -> value, vetBits[i] -> code);
+    }*/
+
+    /*freeArvore(huffTree);*/
+    free(huffTree);
+    free(vetCode);
+    free(vetBits);
+    free(priQueue);
 }
 
 void descompactar(FILE *arq)

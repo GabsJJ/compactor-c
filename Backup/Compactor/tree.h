@@ -2,21 +2,20 @@
 #define TREE_H
 
 #include "priorQueue.h"
+#include <string.h>
 
 typedef struct
 {
-    huffNode* root;
-}tree;
-
-typedef struct
-{
-    char value;
-    int code;
+    int value;
+    char* code;
 }nodeBit;
 
-tree* criarArvore(priorQueue* fila);
+huffNode* criarArvore(priorQueue* fila);
 boolean eFolha(huffNode* node);
 void printarArvore(huffNode* root);
 int quantasFolhas(huffNode* root);
-void transformarEmBits(tree* treeH, nodeBit* vetBits[]);
+int alturaArvore(huffNode* root);
+nodeBit* criarNodeBit(int value, char* code);
+void transformarEmBits(huffNode* root, char* codeAtual, nodeBit** vetor);
+void freeArvore(huffNode* root);
 #endif
