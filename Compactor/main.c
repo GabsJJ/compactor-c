@@ -20,11 +20,10 @@ int main()
         fflush(stdout);
         scanf("%u", &opcao);
         fflush(stdin);
-        contar(arq1);
         if(opcao == 1)
             compactar(arq1, caminho);
         else
-            descompactar(arq1);
+            descompactar(arq1, caminho);
         fclose(arq1);
     }
     return 0;

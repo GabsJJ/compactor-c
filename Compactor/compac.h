@@ -7,7 +7,7 @@
 priorQueue* priQueue;
 
 void contar(FILE *arq);
-void transformBytes(nodeBit** vetBits, FILE *saida, FILE *arq);
+void transformarBytes(nodeBit** vetBits, FILE *saida, FILE *arq);
 void compactar(FILE *arq, char dir[]);
-void descompactar(FILE *arq);
+void descompactar(FILE *arq, char dir[]);
 #endif

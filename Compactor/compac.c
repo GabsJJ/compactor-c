@@ -10,7 +10,7 @@ void contar(FILE *arq)
     while((c = fgetc(arq)) != EOF)
     {
         /*pode ter quebras de linha, tabulações, carriage return etc*/
-        if(c != '\r' && c != '\n' && c != '\t' && c != '\v' && c != '\f')
+        if(c != '\r' && c != '\t' && c != '\v' && c != '\f')
         {
             if(vetAux[c] -> valueHuffNode == 666)
                 vetAux[c] -> valueHuffNode = c;
@@ -27,7 +27,7 @@ void contar(FILE *arq)
     free(vetAux);
 }
 
-void transformBytes(nodeBit** vetBits, FILE *saida, FILE *arq)
+void transformarBytes(nodeBit** vetBits, FILE *saida, FILE *arq)
 {
     int i = 0, indMenor = 0, c = 0, indiceByte = 0;
     char oitoAtual[9] = {0};
@@ -87,10 +87,12 @@ void transformBytes(nodeBit** vetBits, FILE *saida, FILE *arq)
 
 void compactar(FILE *arq, char dir[])
 {
+    contar(arq);
     huffNode* huffTree = criarArvore(priQueue);
     int i = 0, c = 0, qtdBits = 0;
     unsigned char bitsLixo = 0;
-    FILE *saida = fopen("C:/Users/u18196/Desktop/t.joojar", "wb");
+    strcat(dir, ".joojar");
+    FILE *saida = fopen(dir, "wb");
     nodeBit** vetBits = (nodeBit**)malloc(sizeof(nodeBit*)*256);
 
     for(i = 0; i < 256; i++)
@@ -103,11 +105,11 @@ void compactar(FILE *arq, char dir[])
     while((c = fgetc(arq)) != EOF)
         qtdBits += strlen(vetBits[c] -> code);
     bitsLixo = qtdBits % 8;
-    if(bitsLixo != 0)
-        fputc(bitsLixo, saida);
+    fputc(bitsLixo, saida);
     rewind(arq);
+    fputc(quantasFolhas(huffTree)*2, saida);
     printarArq(huffTree, saida);
-    transformBytes(vetBits, saida, arq);
+    transformarBytes(vetBits, saida, arq);
 
     free(huffTree);
     free(vetCode);
@@ -115,7 +117,46 @@ void compactar(FILE *arq, char dir[])
     free(priQueue);
 }
 
-void descompactar(FILE *arq)
+void descompactar(FILE *arq, char dir[])
 {
+    dir[strlen(dir) - 7] = 0; /**tira o .joojar*/
+    FILE *saida = fopen(dir, "wb");
+    int i = 0, c1 = 0, c2 = 0, des = 0, bitsLixo = 0, bytesCharFreq = 0;
+    c1 = fgetc(arq);
+    bitsLixo = c1;
+    c1 = fgetc(arq);
+    bytesCharFreq = c1;
+    huffNode** vetCharFreq = (huffNode**)malloc(sizeof(huffNode*)*(bytesCharFreq/2));
+    char vetBytes[] = "";
+    char byteAtual[9] = {0};
+    while((c1 = fgetc(arq)) != EOF)
+    {
+        printf("\n%d",c1);
+        if(i < bytesCharFreq/2)
+        {
+            c2 = fgetc(arq);
+            vetCharFreq[i] = criarHuffNode(c1, c2);
+            i++;
+        }
+        else
+        {
+            //c1 = c2;
+            for(i = 7; i >= 0; i--)
+            {
+                des = c1 >> i;
+                if(des & 1)
+                    strcat(byteAtual,"1");
+                else
+                    strcat(byteAtual,"0");
+            }
+            //strcat(vetBytes, byteAtual);
+            printf("\n%s",byteAtual);
+            for(i = 0; i < 8; i++)
+                byteAtual[i] = 0;
+        }
+    }
+    /*for(i = 0; i < strlen(vetBytes); i++)
+        printf("\nval: %s", vetBytes[i]);*/
 
+    free(vetCharFreq);
 }
