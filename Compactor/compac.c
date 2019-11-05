@@ -117,30 +117,35 @@ void compactar(FILE *arq, char dir[])
     free(priQueue);
 }
 
-void descompactar(FILE *arq, char dir[])
+char* destransformarBytes(FILE *arq, huffNode** vetCharFreq, int bitsLixo, int bytesCharFreq)
 {
-    dir[strlen(dir) - 7] = 0; /**tira o .joojar*/
-    FILE *saida = fopen(dir, "wb");
-    int i = 0, c1 = 0, c2 = 0, des = 0, bitsLixo = 0, bytesCharFreq = 0;
-    c1 = fgetc(arq);
-    bitsLixo = c1;
-    c1 = fgetc(arq);
-    bytesCharFreq = c1;
-    huffNode** vetCharFreq = (huffNode**)malloc(sizeof(huffNode*)*(bytesCharFreq/2));
-    char vetBytes[] = "";
+    fpos_t posAt;
+    boolean pode = true;
+    int i = 0, ind2 = 0, qtosBytes = 0, c1 = 0, c2 = 0, des = 0;
+    char* vetBytes = 0;
     char byteAtual[9] = {0};
     while((c1 = fgetc(arq)) != EOF)
     {
-        printf("\n%d",c1);
-        if(i < bytesCharFreq/2)
+        if(ind2 < bytesCharFreq/2)
         {
             c2 = fgetc(arq);
-            vetCharFreq[i] = criarHuffNode(c1, c2);
-            i++;
+            vetCharFreq[ind2] = criarHuffNode(c1, c2);
+            ind2++;
         }
         else
         {
-            //c1 = c2;
+            if(pode)
+            {
+                /**pega a qtd de bytes compactados*/
+                fgetpos(arq, &posAt);
+                fseek(arq, 1, SEEK_END);
+                qtosBytes = ftell(arq) - posAt;
+                fsetpos(arq, &posAt);
+                pode = false;
+                vetBytes = (char*)malloc(sizeof(char)*(8*qtosBytes +1));
+                for(i = 0; i < 8*qtosBytes +1; i++)
+                    vetBytes[i] = 0;
+            }
             for(i = 7; i >= 0; i--)
             {
                 des = c1 >> i;
@@ -149,14 +154,56 @@ void descompactar(FILE *arq, char dir[])
                 else
                     strcat(byteAtual,"0");
             }
-            //strcat(vetBytes, byteAtual);
-            printf("\n%s",byteAtual);
+            strcat(vetBytes, byteAtual);
             for(i = 0; i < 8; i++)
                 byteAtual[i] = 0;
         }
     }
-    /*for(i = 0; i < strlen(vetBytes); i++)
-        printf("\nval: %s", vetBytes[i]);*/
+    vetBytes[strlen(vetBytes) - bitsLixo] = 0;
+    rewind(arq);
+    return vetBytes;
+}
 
+void criarFilaDec(huffNode** vetCharFreq, int sizeVetChar, priorQueue* queue2)
+{
+    int i = 0;
+    huffNode** vetAux = (huffNode**)malloc(sizeof(huffNode)*256);
+    for(; i < 256; i++)
+        vetAux[i] = criarHuffNode(666, 1);
+
+    for(i = 0; i < sizeVetChar; i++)
+        vetAux[vetCharFreq[i] -> valueHuffNode] = vetCharFreq[i];
+
+    for(i = 0; i < 256; i++)
+        if(vetAux[i] -> valueHuffNode != 666)
+            inserir(queue2, vetAux[i]);
+
+    free(vetAux);
+}
+
+void descompactar(FILE *arq, char dir[])
+{
+    dir[strlen(dir) - 7] = 0; /**tira o .joojar*/
+    FILE *saida = fopen(dir, "wb");
+    int i = 0, c1 = 0, bitsLixo = 0, bytesCharFreq = 0, indExt = 0;
+    c1 = fgetc(arq);
+    bitsLixo = c1;
+    c1 = fgetc(arq);
+    bytesCharFreq = c1;
+    huffNode** vetCharFreq = (huffNode**)malloc(sizeof(huffNode*)*(bytesCharFreq/2));
+    char* vetBytes = destransformarBytes(arq, vetCharFreq, bitsLixo, bytesCharFreq);
+
+    priorQueue* queue2 = criarFila();
+    criarFilaDec(vetCharFreq, bytesCharFreq/2, queue2);
+    huffNode* huffTree = criarArvore(queue2);
+    i = 0;
+    for(; indExt < strlen(vetBytes); indExt++)
+    {
+        destransformarBits(saida, huffTree, vetBytes, &i);
+        indExt = i;
+    }
+    free(huffTree);
+    free(queue2);
     free(vetCharFreq);
+    free(vetBytes);
 }

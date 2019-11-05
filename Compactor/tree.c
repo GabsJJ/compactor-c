@@ -109,3 +109,21 @@ void printarArq(huffNode* root, FILE* arq)
     if(root -> dir != NULL)
         printarArq(root -> dir, arq);
 }
+
+void destransformarBits(FILE *saida, huffNode* root, char* instrucoes, int* atual)
+{
+    if(eFolha(root))
+    {
+        fputc(root -> valueHuffNode, saida);
+    }
+    else if(instrucoes[*atual] == '0' && root -> esq != NULL)
+    {
+        *atual += 1;
+        destransformarBits(saida, root -> esq, instrucoes, atual);
+    }
+    else if(instrucoes[*atual] == '1' && root -> dir != NULL)
+    {
+        *atual += 1;
+        destransformarBits(saida, root -> dir, instrucoes, atual);
+    }
+}
