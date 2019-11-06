@@ -10,13 +10,10 @@ void contar(FILE *arq)
     while((c = fgetc(arq)) != EOF)
     {
         /*pode ter quebras de linha, tabulações, carriage return etc*/
-        if(c != '\r')
-        {
-            if(vetAux[c] -> valueHuffNode == 666)
-                vetAux[c] -> valueHuffNode = c;
-            else
-                vetAux[c] -> frequency += 1;
-        }
+        if(vetAux[c] -> valueHuffNode == 666)
+            vetAux[c] -> valueHuffNode = c;
+        else
+            vetAux[c] -> frequency += 1;
     }
     rewind(arq);
     /*cria a fila de prioridade de acordo com o metodo de huffman*/
@@ -74,7 +71,7 @@ void transformarBytes(nodeBit** vetBits, FILE *saida, FILE *arq)
             }
         }
     }
-    if (i < 8)
+    if (i < 8 && i != 0)
     {
         indiceByte = 0;
         for(; indiceByte < 8; indiceByte++)
@@ -88,6 +85,7 @@ void transformarBytes(nodeBit** vetBits, FILE *saida, FILE *arq)
 void compactar(FILE *arq, char dir[])
 {
     contar(arq);
+    //printar(priQueue);
     huffNode* huffTree = criarArvore(priQueue);
     int i = 0, c = 0, qtdBits = 0;
     unsigned char bitsLixo = 0;
@@ -104,10 +102,12 @@ void compactar(FILE *arq, char dir[])
 
     while((c = fgetc(arq)) != EOF)
         qtdBits += strlen(vetBits[c] -> code);
-    printf("%d", qtdBits);
-    bitsLixo = qtdBits % 8;
-    fputc(bitsLixo, saida);
+    if(qtdBits <= 8)
+        bitsLixo = 8 - qtdBits;
+    else
+        bitsLixo = qtdBits % 8;
     rewind(arq);
+    fputc(bitsLixo, saida);
     fputc(quantasFolhas(huffTree)*2, saida);
     printarArq(huffTree, saida);
     transformarBytes(vetBits, saida, arq);
@@ -144,7 +144,7 @@ char* destransformarBytes(FILE *arq, huffNode** vetCharFreq, int bitsLixo, int b
                 fsetpos(arq, &posAt);
                 pode = false;
                 vetBytes = (char*)malloc(sizeof(char)*(8*qtosBytes +1));
-                for(i = 0; i < 8*qtosBytes +1; i++)
+                for(i = 0; i < 8*qtosBytes+1; i++)
                     vetBytes[i] = 0;
             }
             for(i = 7; i >= 0; i--)
@@ -194,18 +194,19 @@ void descompactar(FILE *arq, char dir[])
     huffNode** vetCharFreq = (huffNode**)malloc(sizeof(huffNode*)*(bytesCharFreq/2));
     char* vetBytes = destransformarBytes(arq, vetCharFreq, bitsLixo, bytesCharFreq);
 
-    printf("%s", vetBytes);
     priorQueue* queue2 = criarFila();
     criarFilaDec(vetCharFreq, bytesCharFreq/2, queue2);
     huffNode* huffTree = criarArvore(queue2);
-    printarArvore(huffTree);
-    for(i = 0; i < bytesCharFreq/2; i++)
-        printf("\n%d",vetCharFreq[i] -> valueHuffNode);
-    /*for(i = 0; indExt < strlen(vetBytes); indExt++)
-    {
+    if(quantasFolhas(huffTree) == 1)
         destransformarBits(saida, huffTree, vetBytes, &i);
-        indExt = i;
-    }*/
+    else
+    {
+        for(i = 0; indExt <= strlen(vetBytes); indExt++)
+        {
+            destransformarBits(saida, huffTree, vetBytes, &i);
+            indExt = i;
+        }
+    }
     free(huffTree);
     free(queue2);
     free(vetCharFreq);

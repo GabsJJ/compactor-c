@@ -91,6 +91,7 @@ void transformarEmBits(huffNode* root, char* codeAtual, nodeBit** vetor)
         strcpy(codeAux, codeAtual);
         vetor[root -> valueHuffNode] -> value = root -> valueHuffNode;
         vetor[root -> valueHuffNode] -> code = codeAux;
+        //printf("\nval: %d code: %s",root -> valueHuffNode, codeAux);
     }
     if(root -> esq != NULL)
     {
@@ -125,6 +126,7 @@ void destransformarBits(FILE *saida, huffNode* root, char* instrucoes, int* atua
 {
     if(eFolha(root))
     {
+        //printf("\ndec: %d char: %c",root -> valueHuffNode, root -> valueHuffNode);
         fputc(root -> valueHuffNode, saida);
     }
     else if(instrucoes[*atual] == '0' && root -> esq != NULL)
