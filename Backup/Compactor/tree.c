@@ -2,17 +2,28 @@
 
 huffNode* criarArvore(priorQueue* fila)
 {
+    int i = 0;
     huffNode* huffTree = (huffNode*)malloc(sizeof(huffNode));
     huffNode *huffNodeTree, *noEsq, *noDir;
     while(fila -> tamanho >= 2)
     {
+        /*printar(fila);
+        printf("\nTAMANHO: %d", fila -> tamanho);*/
         noEsq = remover(fila, 0) -> value;
         noDir = remover(fila, 0) -> value;
-        huffNodeTree = criarHuffNode(32, (noEsq -> frequency + noDir -> frequency));
+        /*printf("\nvalESQ: %d", noEsq -> frequency);
+        printf("\nvalDIR: %d", noDir -> frequency);
+        printf("\nTAMANHO: %d", fila -> tamanho);*/
+        huffNodeTree = criarHuffNode('A'+i, (noEsq -> frequency + noDir -> frequency));
         huffNodeTree -> esq = noEsq;
         huffNodeTree -> dir = noDir;
         inserir(fila, huffNodeTree);
+        //printf("\n-----to vivo------");
+        i++;
+        /*printf("\nVALESQ: %d", huffNodeTree -> frequency);*/
     }
+    //printar(fila);
+    //printf("\nvalAUX: %d", aux -> value -> valueHuffNode);
     nodeQueue* aux = remover(fila,0);
     huffTree = aux -> value;
     return huffTree;
@@ -28,7 +39,7 @@ boolean eFolha(huffNode* node)
 void printarArvore(huffNode* root)
 {
     if(eFolha(root) == true)
-        printf("\n%c", root -> valueHuffNode);
+        printf("\n%d", root -> valueHuffNode);
     if(root -> esq != NULL)
         printarArvore(root -> esq);
     if(root -> dir != NULL)
@@ -80,6 +91,7 @@ void transformarEmBits(huffNode* root, char* codeAtual, nodeBit** vetor)
         strcpy(codeAux, codeAtual);
         vetor[root -> valueHuffNode] -> value = root -> valueHuffNode;
         vetor[root -> valueHuffNode] -> code = codeAux;
+        //printf("\nval: %d code: %s",root -> valueHuffNode, codeAux);
     }
     if(root -> esq != NULL)
     {
@@ -95,9 +107,36 @@ void transformarEmBits(huffNode* root, char* codeAtual, nodeBit** vetor)
     }
 }
 
-void freeArvore(huffNode* root)
+void printarArq(huffNode* root, FILE* arq)
 {
-    freeArvore(root->esq);
-    freeArvore(root->dir);
-    free(root);
+    if(eFolha(root))
+    {
+        char v1 = root -> valueHuffNode;
+        char v2 = root -> frequency;
+        fputc(v1, arq);
+        fputc(v2, arq);
+    }
+    if(root -> esq != NULL)
+        printarArq(root -> esq, arq);
+    if(root -> dir != NULL)
+        printarArq(root -> dir, arq);
+}
+
+void destransformarBits(FILE *saida, huffNode* root, char* instrucoes, int* atual)
+{
+    if(eFolha(root))
+    {
+        //printf("\ndec: %d char: %c",root -> valueHuffNode, root -> valueHuffNode);
+        fputc(root -> valueHuffNode, saida);
+    }
+    else if(instrucoes[*atual] == '0' && root -> esq != NULL)
+    {
+        *atual += 1;
+        destransformarBits(saida, root -> esq, instrucoes, atual);
+    }
+    else if(instrucoes[*atual] == '1' && root -> dir != NULL)
+    {
+        *atual += 1;
+        destransformarBits(saida, root -> dir, instrucoes, atual);
+    }
 }

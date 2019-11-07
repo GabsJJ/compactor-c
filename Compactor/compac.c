@@ -118,12 +118,19 @@ void compactar(FILE *arq, char dir[])
     free(priQueue);
 }
 
-char* destransformarBytes(FILE *arq, huffNode** vetCharFreq, int bitsLixo, int bytesCharFreq)
+void cuidarBitsLidos(char byte[], huffNode* atual, huffNode* tree, FILE *saida)
 {
-    fpos_t posAt;
-    boolean pode = true;
-    int i = 0, ind2 = 0, qtosBytes = 0, c1 = 0, c2 = 0, des = 0;
-    char* vetBytes = 0;
+    int i = 0;
+    for(; i < strlen(byte); i++)
+    {
+        destransformarBits(saida, atual, tree, byte[i]);
+    }
+}
+
+void destransformarBytes(FILE *arq, FILE *saida, huffNode** vetCharFreq, int bitsLixo, int bytesCharFreq, huffNode* tree)
+{
+    huffNode *atual = criarHuffNode(tree -> valueHuffNode, tree -> frequency);
+    int i = 0, ind2 = 0, c1 = 0, c2 = 0, des = 0;
     char byteAtual[9] = {0};
     while((c1 = fgetc(arq)) != EOF)
     {
@@ -135,18 +142,6 @@ char* destransformarBytes(FILE *arq, huffNode** vetCharFreq, int bitsLixo, int b
         }
         else
         {
-            if(pode)
-            {
-                /**pega a qtd de bytes compactados*/
-                fgetpos(arq, &posAt);
-                fseek(arq, 1, SEEK_END);
-                qtosBytes = ftell(arq) - posAt;
-                fsetpos(arq, &posAt);
-                pode = false;
-                vetBytes = (char*)malloc(sizeof(char)*(8*qtosBytes +1));
-                for(i = 0; i < 8*qtosBytes+1; i++)
-                    vetBytes[i] = 0;
-            }
             for(i = 7; i >= 0; i--)
             {
                 des = c1 >> i;
@@ -155,14 +150,13 @@ char* destransformarBytes(FILE *arq, huffNode** vetCharFreq, int bitsLixo, int b
                 else
                     strcat(byteAtual,"0");
             }
-            strcat(vetBytes, byteAtual);
+            cuidarBitsLidos(byteAtual, atual, tree, saida);
             for(i = 0; i < 8; i++)
                 byteAtual[i] = 0;
         }
     }
-    vetBytes[strlen(vetBytes) - bitsLixo] = 0;
     rewind(arq);
-    return vetBytes;
+    free(atual);
 }
 
 void criarFilaDec(huffNode** vetCharFreq, int sizeVetChar, priorQueue* queue2)
@@ -186,29 +180,19 @@ void descompactar(FILE *arq, char dir[])
 {
     dir[strlen(dir) - 7] = 0; /**tira o .joojar*/
     FILE *saida = fopen(dir, "wb");
-    int i = 0, c1 = 0, bitsLixo = 0, bytesCharFreq = 0, indExt = 0;
+    int c1 = 0, bitsLixo = 0, bytesCharFreq = 0;
     c1 = fgetc(arq);
     bitsLixo = c1;
     c1 = fgetc(arq);
     bytesCharFreq = c1;
     huffNode** vetCharFreq = (huffNode**)malloc(sizeof(huffNode*)*(bytesCharFreq/2));
-    char* vetBytes = destransformarBytes(arq, vetCharFreq, bitsLixo, bytesCharFreq);
 
     priorQueue* queue2 = criarFila();
     criarFilaDec(vetCharFreq, bytesCharFreq/2, queue2);
     huffNode* huffTree = criarArvore(queue2);
-    if(quantasFolhas(huffTree) == 1)
-        destransformarBits(saida, huffTree, vetBytes, &i);
-    else
-    {
-        for(i = 0; indExt <= strlen(vetBytes); indExt++)
-        {
-            destransformarBits(saida, huffTree, vetBytes, &i);
-            indExt = i;
-        }
-    }
+    destransformarBytes(arq, saida, vetCharFreq, bitsLixo, bytesCharFreq, huffTree);
+
     free(huffTree);
     free(queue2);
     free(vetCharFreq);
-    free(vetBytes);
 }

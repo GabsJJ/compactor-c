@@ -44,12 +44,11 @@ void inserir(priorQueue* fila, huffNode* novo)
             nodeQueue* novoAux = criarNo(novo);
             fila -> fim -> prox = novoAux;
             fila -> fim = novoAux;
-
         }
         else
         {
             nodeQueue* noAt = fila -> inicio;
-            nodeQueue* noAnt = noAt;
+            nodeQueue* noAnt = NULL;
             while(noAt != NULL)
             {
                 if(novo -> frequency < noAt -> value -> frequency)
@@ -63,7 +62,10 @@ void inserir(priorQueue* fila, huffNode* novo)
                 {
                     nodeQueue* novoAux = criarNo(novo);
                     novoAux -> prox = noAt;
-                    noAnt -> prox = novoAux;
+                    if(noAnt != NULL)
+                        noAnt -> prox = novoAux;
+                    else
+                        fila -> inicio = novoAux;
                     break;
                 }
                 noAnt = noAt;

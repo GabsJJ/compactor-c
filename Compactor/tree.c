@@ -122,21 +122,19 @@ void printarArq(huffNode* root, FILE* arq)
         printarArq(root -> dir, arq);
 }
 
-void destransformarBits(FILE *saida, huffNode* root, char* instrucoes, int* atual)
+void destransformarBits(FILE *saida, huffNode* atual, huffNode* tree, int instrucao)
 {
-    if(eFolha(root))
+    if(eFolha(atual))
     {
-        //printf("\ndec: %d char: %c",root -> valueHuffNode, root -> valueHuffNode);
-        fputc(root -> valueHuffNode, saida);
+        atual = tree;
+        fputc(atual -> valueHuffNode, saida);
     }
-    else if(instrucoes[*atual] == '0' && root -> esq != NULL)
+    else if(instrucao == '0' && atual -> esq != NULL)
     {
-        *atual += 1;
-        destransformarBits(saida, root -> esq, instrucoes, atual);
+        atual = atual -> esq;
     }
-    else if(instrucoes[*atual] == '1' && root -> dir != NULL)
+    else if(instrucao == '1' && atual -> dir != NULL)
     {
-        *atual += 1;
-        destransformarBits(saida, root -> dir, instrucoes, atual);
+        atual = atual -> dir;
     }
 }
