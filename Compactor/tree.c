@@ -91,7 +91,6 @@ void transformarEmBits(huffNode* root, char* codeAtual, nodeBit** vetor)
         strcpy(codeAux, codeAtual);
         vetor[root -> valueHuffNode] -> value = root -> valueHuffNode;
         vetor[root -> valueHuffNode] -> code = codeAux;
-        //printf("\nval: %d code: %s",root -> valueHuffNode, codeAux);
     }
     if(root -> esq != NULL)
     {
@@ -122,19 +121,29 @@ void printarArq(huffNode* root, FILE* arq)
         printarArq(root -> dir, arq);
 }
 
-void destransformarBits(FILE *saida, huffNode* atual, huffNode* tree, int instrucao)
+huffNode* destransformarBits(FILE *saida, huffNode* atual, huffNode* tree, int instrucao)
 {
+    if(instrucao == '0' && atual -> esq != NULL)
+    {
+        atual -> valueHuffNode = atual -> esq -> valueHuffNode;
+        atual -> frequency = atual -> esq -> frequency;
+        atual -> dir = atual -> esq -> dir;
+        atual -> esq = atual -> esq -> esq;
+    }
+    if(instrucao == '1' && atual -> dir != NULL)
+    {
+        atual -> valueHuffNode = atual -> dir -> valueHuffNode;
+        atual -> frequency = atual -> dir -> frequency;
+        atual -> esq = atual -> dir -> esq;
+        atual -> dir = atual -> dir -> dir;
+    }
     if(eFolha(atual))
     {
-        atual = tree;
         fputc(atual -> valueHuffNode, saida);
+        free(atual);
+        atual = criarHuffNode(tree -> valueHuffNode, tree -> frequency);
+        atual -> esq = tree -> esq;
+        atual -> dir = tree -> dir;
     }
-    else if(instrucao == '0' && atual -> esq != NULL)
-    {
-        atual = atual -> esq;
-    }
-    else if(instrucao == '1' && atual -> dir != NULL)
-    {
-        atual = atual -> dir;
-    }
+    return atual;
 }
