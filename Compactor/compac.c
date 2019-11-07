@@ -56,6 +56,7 @@ void transformarBytes(nodeBit** vetBits, FILE *saida, FILE *arq)
                 for(; indiceByte < 8; indiceByte++)
                     if(oitoAtual[indiceByte] == '1')            /**1 = 00000001*/
                         byteResultado |= 1 << (7 - indiceByte); /**coloca 1 na posicao (7 -indiceByte) e mescla com o anterior*/
+                //printf("\n%s",oitoAtual);
                 for(; i < 9; i++)
                         oitoAtual[i] = 0;
                 i = 0;
@@ -85,6 +86,7 @@ void transformarBytes(nodeBit** vetBits, FILE *saida, FILE *arq)
 void compactar(FILE *arq, char dir[])
 {
     contar(arq);
+    printar(priQueue);
     huffNode* huffTree = criarArvore(priQueue);
     int i = 0, c = 0, qtdBits = 0;
     unsigned char bitsLixo = 0;
@@ -127,13 +129,15 @@ huffNode* cuidarBitsLidos(char byte[], huffNode *atual, huffNode* tree, FILE *sa
 
 huffNode** criarFilaPrioridadeDec(FILE *arq, int tamanho)
 {
-    int c1 = 0, c2 = 0, i = 0;
+    unsigned char c1 = 0, c2 = 0;
+    int i = 0;
     huffNode** vetAux = (huffNode**)malloc(sizeof(huffNode*)*tamanho);
     while(i < tamanho)
     {
         c1 = fgetc(arq);
         c2 = fgetc(arq);
         vetAux[i] = criarHuffNode(c1, c2);
+        printf("\nval: %c freq: %d", vetAux[i] -> valueHuffNode, vetAux[i] -> frequency);
         i++;
     }
     return vetAux;
@@ -148,11 +152,15 @@ void destransformarBytes(FILE *arq, FILE *saida, huffNode** vetCharFreq, int bit
     int i = 0, c1 = 0, des = 0, qtosBytes = 0, indiceByteAtual = 1;
     char byteAtual[9] = {0};
     /**pega a qtd de bytes compactados*/
-    fgetpos(arq, &posAt);
+    /*fgetpos(arq, &posAt);
     fseek(arq, 1, SEEK_END);
     qtosBytes = ftell(arq) - posAt;
-    fsetpos(arq, &posAt);
-    while((c1 = fgetc(arq)) != EOF)
+    fsetpos(arq, &posAt);*/
+    /*c1 = fgetc(arq);
+    printf("\n%d",c1);
+    c1 = fgetc(arq);
+    printf("\n%d",c1);*/
+    /*while((c1 = fgetc(arq)) != EOF)
     {
         for(i = 7; i >= 0; i--)
         {
@@ -162,9 +170,10 @@ void destransformarBytes(FILE *arq, FILE *saida, huffNode** vetCharFreq, int bit
             else
                 strcat(byteAtual,"0");
         }
-        if(indiceByteAtual != qtosBytes-1)
+        //printf("\n%s",byteAtual);
+        //if(indiceByteAtual != qtosBytes-1)
             atual = cuidarBitsLidos(byteAtual, atual, tree, saida);
-        else
+        /*else
         {
             byteAtual[strlen(byteAtual) - bitsLixo] = 0;
             atual = cuidarBitsLidos(byteAtual, atual, tree, saida);
@@ -172,7 +181,7 @@ void destransformarBytes(FILE *arq, FILE *saida, huffNode** vetCharFreq, int bit
         for(i = 0; i < strlen(byteAtual); i++)
             byteAtual[i] = 0;
         indiceByteAtual++;
-    }
+    }*/
     rewind(arq);
     free(atual);
 }
@@ -198,7 +207,7 @@ void descompactar(FILE *arq, char dir[])
 {
     dir[strlen(dir) - 7] = 0; /**tira o .joojar*/
     FILE *saida = fopen(dir, "wb");
-    int c1 = 0, bitsLixo = 0, bytesCharFreq = 0;
+    long long int c1 = 0, bitsLixo = 0, bytesCharFreq = 0;
     c1 = fgetc(arq);
     bitsLixo = c1;
     c1 = fgetc(arq);
@@ -206,6 +215,7 @@ void descompactar(FILE *arq, char dir[])
     huffNode** vetCharFreq = criarFilaPrioridadeDec(arq, bytesCharFreq/2);
     priorQueue* queue2 = criarFila();
     criarFilaDec(vetCharFreq, bytesCharFreq/2, queue2);
+    printar(queue2);
     huffNode* huffTree = criarArvore(queue2);
     destransformarBytes(arq, saida, vetCharFreq, bitsLixo, bytesCharFreq, huffTree);
 

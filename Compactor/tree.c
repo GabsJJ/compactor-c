@@ -91,6 +91,7 @@ void transformarEmBits(huffNode* root, char* codeAtual, nodeBit** vetor)
         strcpy(codeAux, codeAtual);
         vetor[root -> valueHuffNode] -> value = root -> valueHuffNode;
         vetor[root -> valueHuffNode] -> code = codeAux;
+        //printf("\nval: %c freq: %d code: %s", root -> valueHuffNode, root -> frequency, codeAux);
     }
     if(root -> esq != NULL)
     {
@@ -110,8 +111,8 @@ void printarArq(huffNode* root, FILE* arq)
 {
     if(eFolha(root))
     {
-        char v1 = root -> valueHuffNode;
-        char v2 = root -> frequency;
+        long long int v1 = root -> valueHuffNode;
+        unsigned char v2 = root -> frequency;
         fputc(v1, arq);
         fputc(v2, arq);
     }
@@ -140,6 +141,7 @@ huffNode* destransformarBits(FILE *saida, huffNode* atual, huffNode* tree, int i
     if(eFolha(atual))
     {
         fputc(atual -> valueHuffNode, saida);
+        //printf("\n%c", atual -> valueHuffNode);
         free(atual);
         atual = criarHuffNode(tree -> valueHuffNode, tree -> frequency);
         atual -> esq = tree -> esq;
