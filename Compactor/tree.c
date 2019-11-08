@@ -7,23 +7,14 @@ huffNode* criarArvore(priorQueue* fila)
     huffNode *huffNodeTree, *noEsq, *noDir;
     while(fila -> tamanho >= 2)
     {
-        /*printar(fila);
-        printf("\nTAMANHO: %d", fila -> tamanho);*/
         noEsq = remover(fila, 0) -> value;
         noDir = remover(fila, 0) -> value;
-        /*printf("\nvalESQ: %d", noEsq -> frequency);
-        printf("\nvalDIR: %d", noDir -> frequency);
-        printf("\nTAMANHO: %d", fila -> tamanho);*/
         huffNodeTree = criarHuffNode('A'+i, (noEsq -> frequency + noDir -> frequency));
         huffNodeTree -> esq = noEsq;
         huffNodeTree -> dir = noDir;
         inserir(fila, huffNodeTree);
-        //printf("\n-----to vivo------");
         i++;
-        /*printf("\nVALESQ: %d", huffNodeTree -> frequency);*/
     }
-    //printar(fila);
-    //printf("\nvalAUX: %d", aux -> value -> valueHuffNode);
     nodeQueue* aux = remover(fila,0);
     huffTree = aux -> value;
     return huffTree;
@@ -86,12 +77,10 @@ void transformarEmBits(huffNode* root, char* codeAtual, nodeBit** vetor)
     {
         char* codeAux = (char*)malloc(sizeof(char)*strlen(codeAtual));
         int i = 0;
-        for(i = 0; i < strlen(codeAtual); i++)
-            codeAux[i] = 0;
-        strcpy(codeAux, codeAtual);
+        for(; i <= strlen(codeAtual); i++)
+            codeAux[i] = codeAtual[i];
         vetor[root -> valueHuffNode] -> value = root -> valueHuffNode;
         vetor[root -> valueHuffNode] -> code = codeAux;
-        //printf("\nval: %c freq: %d code: %s", root -> valueHuffNode, root -> frequency, codeAux);
     }
     if(root -> esq != NULL)
     {
@@ -111,10 +100,10 @@ void printarArq(huffNode* root, FILE* arq)
 {
     if(eFolha(root))
     {
-        long long int v1 = root -> valueHuffNode;
-        unsigned char v2 = root -> frequency;
-        fputc(v1, arq);
-        fputc(v2, arq);
+        unsigned char v1 = root -> valueHuffNode;
+        unsigned int v2 = root -> frequency;
+        fwrite(&v1, sizeof(char), 1, arq);
+        fwrite(&v2, sizeof(unsigned int), 1, arq);
     }
     if(root -> esq != NULL)
         printarArq(root -> esq, arq);
@@ -140,8 +129,7 @@ huffNode* destransformarBits(FILE *saida, huffNode* atual, huffNode* tree, int i
     }
     if(eFolha(atual))
     {
-        fputc(atual -> valueHuffNode, saida);
-        //printf("\n%c", atual -> valueHuffNode);
+        fwrite(&(atual -> valueHuffNode), sizeof(char), 1, saida);
         free(atual);
         atual = criarHuffNode(tree -> valueHuffNode, tree -> frequency);
         atual -> esq = tree -> esq;
