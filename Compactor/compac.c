@@ -39,19 +39,16 @@ void transformarBytes(nodeBit** vetBits, FILE *saida, FILE *arq)
         }
         else
         {
-            //printf("\n%s", oitoAtual);
             for(; i < 8 && indMenor < strlen(vetBits[c] -> code); i++, indMenor++)
                 oitoAtual[i] = vetBits[c] -> code[indMenor];
             if(i < 8)
             {
-                //printf("\ne");
                 indMenor = 0;
                 if(fread(&c, sizeof(char), 1, arq) != 1)
                     acabou = true;
             }
             else if (i == 8)
             {
-                //printf("\ne");
                 i = 0;
                 indiceByte = 0;
                 for(; indiceByte < 8; indiceByte++)
@@ -86,39 +83,46 @@ void transformarBytes(nodeBit** vetBits, FILE *saida, FILE *arq)
 
 void compactar(FILE *arq, char dir[])
 {
-    contar(arq);
-    huffNode* huffTree = criarArvore(priQueue);
-    int i = 0, qtdBits = 0, folhas = quantasFolhas(huffTree)*2, c = 0;
-    unsigned char bitsLixo = 0;
-    strcat(dir, ".joojar");
-    FILE *saida = fopen(dir, "wb");
-    nodeBit** vetBits = (nodeBit**)malloc(sizeof(nodeBit*)*256);
-
-    for(i = 0; i < 256; i++)
-        vetBits[i] = criarNodeBit(666,"a");
-    char* vetCode = (char*)malloc(sizeof(char)*alturaArvore(huffTree));
-    for(i = 0; i < alturaArvore(huffTree); i++)
-        vetCode[i] = 0;
-
-    transformarEmBits(huffTree, vetCode, vetBits);
-    printf("asdsd");
-    while(fread(&c, sizeof(char), 1, arq) == 1)
-        qtdBits += strlen(vetBits[c] -> code);
-    if(qtdBits <= 8)
-        bitsLixo = 8 - qtdBits;
-    else
-        bitsLixo = qtdBits % 8;
+    fseek(arq, 1, SEEK_END);
+    int qtdBytes = ftell(arq);
     rewind(arq);
-    fwrite(&bitsLixo, sizeof(char), 1, saida);
-    fwrite(&folhas, sizeof(int), 1, saida);
-    printarArq(huffTree, saida);
-    transformarBytes(vetBits, saida, arq);
+    if(qtdBytes != 1)
+    {
+        contar(arq);
+        huffNode* huffTree = criarArvore(priQueue);
+        int i = 0, qtdBits = 0, folhas = quantasFolhas(huffTree)*2, c = 0;
+        unsigned char bitsLixo = 0;
+        strcat(dir, ".joojar");
+        FILE *saida = fopen(dir, "wb");
+        nodeBit** vetBits = (nodeBit**)malloc(sizeof(nodeBit*)*256);
 
-    free(huffTree);
-    free(vetCode);
-    free(priQueue);
-    free(vetBits);
-    fclose(saida);
+        for(i = 0; i < 256; i++)
+            vetBits[i] = criarNodeBit(666,"a");
+        char* vetCode = (char*)malloc(sizeof(char)*alturaArvore(huffTree));
+        for(i = 0; i < alturaArvore(huffTree); i++)
+            vetCode[i] = 0;
+
+        transformarEmBits(huffTree, vetCode, vetBits);
+        while(fread(&c, sizeof(char), 1, arq) == 1)
+            qtdBits += strlen(vetBits[c] -> code);
+        if(qtdBits <= 8)
+            bitsLixo = 8 - qtdBits;
+        else
+            bitsLixo = qtdBits % 8;
+        rewind(arq);
+        fwrite(&bitsLixo, sizeof(char), 1, saida);
+        fwrite(&folhas, sizeof(int), 1, saida);
+        printarArq(huffTree, saida);
+        transformarBytes(vetBits, saida, arq);
+
+        free(huffTree);
+        free(vetCode);
+        free(priQueue);
+        free(vetBits);
+        fclose(saida);
+    }
+    else
+        printf("Arquivo vazio...");
 }
 
 huffNode* cuidarBitsLidos(char byte[], huffNode *atual, huffNode* tree, FILE *saida)
@@ -204,19 +208,27 @@ void criarFilaDec(huffNode** vetCharFreq, int sizeVetChar, priorQueue* queue2)
 
 void descompactar(FILE *arq, char dir[])
 {
-    dir[strlen(dir) - 7] = 0; /**tira o .joojar*/
-    FILE *saida = fopen(dir, "wb");
-    int bitsLixo = 0, bytesCharFreq = 0;
-    fread(&bitsLixo, sizeof(char), 1, arq);
-    fread(&bytesCharFreq, sizeof(int), 1, arq);
-    huffNode** vetCharFreq = criarFilaPrioridadeDec(arq, bytesCharFreq/2);
-    priorQueue* queue2 = criarFila();
-    criarFilaDec(vetCharFreq, bytesCharFreq/2, queue2);
-    huffNode* huffTree = criarArvore(queue2);
-    destransformarBytes(arq, saida, vetCharFreq, bitsLixo, bytesCharFreq, huffTree);
+    fseek(arq, 1, SEEK_END);
+    int qtdBytes = ftell(arq);
+    rewind(arq);
+    if(qtdBytes != 1 && strstr(dir, ".joojar") != NULL)
+    {
+        dir[strlen(dir) - 7] = 0; /**tira o .joojar*/
+        FILE *saida = fopen(dir, "wb");
+        int bitsLixo = 0, bytesCharFreq = 0;
+        fread(&bitsLixo, sizeof(char), 1, arq);
+        fread(&bytesCharFreq, sizeof(int), 1, arq);
+        huffNode** vetCharFreq = criarFilaPrioridadeDec(arq, bytesCharFreq/2);
+        priorQueue* queue2 = criarFila();
+        criarFilaDec(vetCharFreq, bytesCharFreq/2, queue2);
+        huffNode* huffTree = criarArvore(queue2);
+        destransformarBytes(arq, saida, vetCharFreq, bitsLixo, bytesCharFreq, huffTree);
 
-    free(huffTree);
-    free(queue2);
-    free(vetCharFreq);
-    fclose(saida);
+        free(huffTree);
+        free(queue2);
+        free(vetCharFreq);
+        fclose(saida);
+    }
+    else
+        printf("\nNão foi possivel descompactar o arquivo...");
 }
