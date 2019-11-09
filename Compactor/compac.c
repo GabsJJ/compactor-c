@@ -114,8 +114,8 @@ void compactar(FILE *arq, char dir[])
         fwrite(&folhas, sizeof(int), 1, saida);
         printarArq(huffTree, saida);
         transformarBytes(vetStringsCodes, saida, arq);
-        /*for(i = 0; i < 256; i++)
-            free(vetStringsCodes[i]);*/
+        for(i = 0; i < 256; i++)
+            free(vetStringsCodes[i]);
 
         printf("\nFinalizado...");
         free(huffTree);
