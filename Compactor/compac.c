@@ -115,9 +115,10 @@ void compactar(FILE *arq, char dir[])
         fwrite(&bitsLixo, sizeof(char), 1, saida);
         fwrite(&folhas, sizeof(int), 1, saida);
         printarArq(huffTree, saida);
-        freeArvore(huffTree);
         free(huffTree);
         transformarBytes(vetStringsCodes, saida, arq);
+        for(i = 0; i < 256; i++)
+            free(vetStringsCodes[i]);
 
         printf("\nFinalizado...");
         free(vetCode);
@@ -231,7 +232,6 @@ void descompactar(FILE *arq, char dir[])
         destransformarBytes(arq, saida, vetCharFreq, bitsLixo, bytesCharFreq, huffTree);
 
         printf("\nFinalizado...");
-        freeArvore(huffTree);
         free(huffTree);
         free(vetCharFreq);
         fclose(saida);

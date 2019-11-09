@@ -40,7 +40,8 @@ int main()
                 break;
             system("cls");
         }
-        fclose(arq1);
     }
+    fclose(arq1);
+    system("pause");
     return 0;
 }
