@@ -102,8 +102,6 @@ void compactar(FILE *arq, char dir[])
         for(i = 0; i < alturaArvore(huffTree); i++)
             vetCode[i] = 0;
 
-        freeFila(priQueue);
-        free(priQueue);
         transformarEmBits(huffTree, vetCode, vetStringsCodes, atual);
         while(fread(&c, sizeof(char), 1, arq) == 1)
             qtdBits += strlen(vetStringsCodes[c]);
@@ -115,13 +113,16 @@ void compactar(FILE *arq, char dir[])
         fwrite(&bitsLixo, sizeof(char), 1, saida);
         fwrite(&folhas, sizeof(int), 1, saida);
         printarArq(huffTree, saida);
-        free(huffTree);
         transformarBytes(vetStringsCodes, saida, arq);
-        for(i = 0; i < 256; i++)
-            free(vetStringsCodes[i]);
+        /*for(i = 0; i < 256; i++)
+            free(vetStringsCodes[i]);*/
 
         printf("\nFinalizado...");
+        free(huffTree);
+        freeFila(priQueue);
+        free(priQueue);
         free(vetCode);
+        fclose(arq);
         fclose(saida);
     }
     else
@@ -232,8 +233,10 @@ void descompactar(FILE *arq, char dir[])
         destransformarBytes(arq, saida, vetCharFreq, bitsLixo, bytesCharFreq, huffTree);
 
         printf("\nFinalizado...");
+        freeArvore(huffTree);
         free(huffTree);
         free(vetCharFreq);
+        fclose(arq);
         fclose(saida);
     }
     else

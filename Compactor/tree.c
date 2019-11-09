@@ -154,3 +154,13 @@ huffNode* destransformarBits(FILE *saida, huffNode* atual, huffNode* tree, int i
     }
     return atual;
 }
+
+void freeArvore(huffNode* root)
+{
+    if(root != NULL)
+    {
+        freeArvore(root -> esq);
+        freeArvore(root -> dir);
+        free(root);
+    }
+}

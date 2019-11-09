@@ -41,7 +41,6 @@ int main()
             system("cls");
         }
     }
-    fclose(arq1);
     system("pause");
     return 0;
 }
