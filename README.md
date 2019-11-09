@@ -1,1 +1,1 @@
-# C---Compactor-Decompressor
+# C Compactor and Decompressor
