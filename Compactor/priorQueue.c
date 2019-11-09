@@ -108,6 +108,17 @@ nodeQueue* remover(priorQueue* fila, int posicao)
     return noAremover;
 }
 
+void freeFila(priorQueue* fila)
+{
+    if(fila -> tamanho != 0)
+    {
+        nodeQueue* rem = NULL;
+        while(fila -> tamanho != 0)
+            rem = remover(fila, 0);
+        free(rem);
+    }
+}
+
 void printar(priorQueue* fila)
 {
     if(fila -> inicio != NULL)

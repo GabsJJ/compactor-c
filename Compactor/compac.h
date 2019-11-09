@@ -7,7 +7,7 @@
 priorQueue* priQueue;
 
 void contar(FILE *arq);
-void transformarBytes(nodeBit** vetBits, FILE *saida, FILE *arq);
+void transformarBytes(char** vetStringsCodes, FILE *saida, FILE *arq);
 void compactar(FILE *arq, char dir[]);
 huffNode* cuidarBitsLidos(char byte[], huffNode *atual, huffNode* tree, FILE *saida);
 huffNode** criarFilaPrioridadeDec(FILE *arq, int tamanho);

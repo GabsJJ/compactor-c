@@ -33,9 +33,10 @@ typedef struct
 }priorQueue;
 
 priorQueue* criarFila();
-nodeQueue* criarNo(huffNode* value);
+nodeQueue* criarNo(huffNode* novo);
 huffNode* criarHuffNode(int value, int freq);
 void inserir(priorQueue* fila, huffNode* novo);
+void freeFila(priorQueue* fila);
 void printar(priorQueue* fila);
 nodeQueue* remover(priorQueue* fila, int posicao);
 #endif

@@ -2,28 +2,27 @@
 
 void contar(FILE *arq)
 {
-    int i = 0, c = 0;
-    huffNode** vetAux = (huffNode**)malloc(sizeof(huffNode)*256);
+    int i = 0;
+    unsigned int c = 0;
+    int vetAux[256];
     for(i = 0; i < 256; i++)
-        vetAux[i] = criarHuffNode(666, 1);
+        vetAux[i] = 0;
 
     while(fread(&c, sizeof(char), 1, arq) == 1)
-    {
-        if(vetAux[c] -> valueHuffNode == 666)
-            vetAux[c] -> valueHuffNode = c;
-        else
-            vetAux[c] -> frequency += 1;
-    }
+        vetAux[c] += 1;
+
     rewind(arq);
     /*cria a fila de prioridade de acordo com o metodo de huffman*/
     priQueue = criarFila();
     for(i = 0; i < 256; i++)
-        if(vetAux[i] -> valueHuffNode != 666)
-            inserir(priQueue, vetAux[i]);
-    free(vetAux);
+        if(vetAux[i] != 0)
+        {
+            huffNode* novo = criarHuffNode(i, vetAux[i]);
+            inserir(priQueue, novo);
+        }
 }
 
-void transformarBytes(nodeBit** vetBits, FILE *saida, FILE *arq)
+void transformarBytes(char** vetStringsCodes, FILE *saida, FILE *arq)
 {
     int i = 0, indMenor = 0, indiceByte = 0, c = 0;
     char oitoAtual[9] = {0};
@@ -32,15 +31,16 @@ void transformarBytes(nodeBit** vetBits, FILE *saida, FILE *arq)
     fread(&c, sizeof(char), 1, arq);
     while(!acabou)
     {
-        if(vetBits[c] -> value == 666)
+        if(strcmp(vetStringsCodes[c], "") == 0)
         {
             if(fread(&c, sizeof(char), 1, arq) != 1)
                 acabou = true;
         }
         else
         {
-            for(; i < 8 && indMenor < strlen(vetBits[c] -> code); i++, indMenor++)
-                oitoAtual[i] = vetBits[c] -> code[indMenor];
+            char *codeMenor = vetStringsCodes[c];
+            for(; i < 8 && indMenor < strlen(vetStringsCodes[c]); i++, indMenor++)
+                oitoAtual[i] = codeMenor[indMenor];
             if(i < 8)
             {
                 indMenor = 0;
@@ -59,7 +59,7 @@ void transformarBytes(nodeBit** vetBits, FILE *saida, FILE *arq)
                 i = 0;
                 fwrite(&byteResultado, sizeof(char), 1, saida);
                 byteResultado = 0;
-                if(indMenor == strlen(vetBits[c] -> code)) /**percorreu todo o cod atual*/
+                if(indMenor == strlen(vetStringsCodes[c])) /**percorreu todo o cod atual*/
                 {
                     indMenor = 0;
                     if(fread(&c, sizeof(char), 1, arq) != 1)
@@ -90,21 +90,23 @@ void compactar(FILE *arq, char dir[])
     {
         contar(arq);
         huffNode* huffTree = criarArvore(priQueue);
-        int i = 0, qtdBits = 0, folhas = quantasFolhas(huffTree)*2, c = 0;
+        int i = 0, qtdBits = 0, folhas = quantasFolhas(huffTree)*2, c = 0, atual = 0;
+        char* vetCode = (char*)malloc(sizeof(char)*alturaArvore(huffTree));
+        char* vetStringsCodes[256];
         unsigned char bitsLixo = 0;
         strcat(dir, ".joojar");
         FILE *saida = fopen(dir, "wb");
-        nodeBit** vetBits = (nodeBit**)malloc(sizeof(nodeBit*)*256);
 
         for(i = 0; i < 256; i++)
-            vetBits[i] = criarNodeBit(666,"a");
-        char* vetCode = (char*)malloc(sizeof(char)*alturaArvore(huffTree));
+            vetStringsCodes[i] = "";
         for(i = 0; i < alturaArvore(huffTree); i++)
             vetCode[i] = 0;
 
-        transformarEmBits(huffTree, vetCode, vetBits);
+        freeFila(priQueue);
+        free(priQueue);
+        transformarEmBits(huffTree, vetCode, vetStringsCodes, atual);
         while(fread(&c, sizeof(char), 1, arq) == 1)
-            qtdBits += strlen(vetBits[c] -> code);
+            qtdBits += strlen(vetStringsCodes[c]);
         if(qtdBits <= 8)
             bitsLixo = 8 - qtdBits;
         else
@@ -113,12 +115,12 @@ void compactar(FILE *arq, char dir[])
         fwrite(&bitsLixo, sizeof(char), 1, saida);
         fwrite(&folhas, sizeof(int), 1, saida);
         printarArq(huffTree, saida);
-        transformarBytes(vetBits, saida, arq);
-
+        freeArvore(huffTree);
         free(huffTree);
+        transformarBytes(vetStringsCodes, saida, arq);
+
+        printf("\nFinalizado...");
         free(vetCode);
-        free(priQueue);
-        free(vetBits);
         fclose(saida);
     }
     else
@@ -192,18 +194,20 @@ void destransformarBytes(FILE *arq, FILE *saida, huffNode** vetCharFreq, int bit
 void criarFilaDec(huffNode** vetCharFreq, int sizeVetChar, priorQueue* queue2)
 {
     int i = 0;
-    huffNode** vetAux = (huffNode**)malloc(sizeof(huffNode)*256);
+    int vetAux[256];
     for(; i < 256; i++)
-        vetAux[i] = criarHuffNode(666, 1);
+        vetAux[i] = 0;
 
     for(i = 0; i < sizeVetChar; i++)
-        vetAux[vetCharFreq[i] -> valueHuffNode] = vetCharFreq[i];
+        vetAux[vetCharFreq[i] -> valueHuffNode] = vetCharFreq[i] -> frequency;
 
     for(i = 0; i < 256; i++)
-        if(vetAux[i] -> valueHuffNode != 666)
-            inserir(queue2, vetAux[i]);
-
-    free(vetAux);
+        if(vetAux[i] != 0)
+            if(vetAux[i] != 0)
+            {
+                huffNode* novo = criarHuffNode(i, vetAux[i]);
+                inserir(queue2, novo);
+            }
 }
 
 void descompactar(FILE *arq, char dir[])
@@ -222,10 +226,13 @@ void descompactar(FILE *arq, char dir[])
         priorQueue* queue2 = criarFila();
         criarFilaDec(vetCharFreq, bytesCharFreq/2, queue2);
         huffNode* huffTree = criarArvore(queue2);
+        freeFila(queue2);
+        free(queue2);
         destransformarBytes(arq, saida, vetCharFreq, bitsLixo, bytesCharFreq, huffTree);
 
+        printf("\nFinalizado...");
+        freeArvore(huffTree);
         free(huffTree);
-        free(queue2);
         free(vetCharFreq);
         fclose(saida);
     }
